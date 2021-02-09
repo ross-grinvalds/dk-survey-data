@@ -6,7 +6,7 @@ import seaborn as sns
     "CCTC Wave 1 Dataset for Public Distribution.xlsx",
     sheet_name=1
 )"""
-df = pd.read_pickle('pickled_df')
+df = pd.read_pickle('data/pickled_df')
 
 metadata = {
     'categories': {
@@ -182,6 +182,8 @@ example_job = {
     },
 }
 
+# Figure Settings
+sns.set(rc={'figure.figsize':(24,16)})
 
 # Analysis Plans
 categories = [
@@ -530,3 +532,66 @@ analysis_12 = Analysis({
     'sort_order': sort_order,
 })
 analysis_12.plots['seaborn_barplot'].get_figure().savefig('analysis_12', bbox_inches='tight')
+
+# Income by generation
+Analysis({
+    'categories': ['generation'],
+    'filters': filters,
+    'labels': {
+        'title': 'Which of the following ranges describes your annual household income for 2019?',
+        'xlabel': 'Income',
+        'ylabel': 'Proportion Responding Yes',
+    },
+    'questions': {
+        'q42': [
+            'Prefer not to answer',
+            'Under $25,000',
+            '$25,000–$49,999',
+            '$50,000–$99,999',
+            '$100,000–$149,999',
+            '$150,000–$199,999',
+            '$200,000 or more',
+        ]
+    },
+    'sort_order': sort_order,
+    'split_question': 'q42',
+}).plots['seaborn_barplot'].get_figure().savefig('analysis_income', bbox_inches='tight')
+
+# Participation
+Analysis({
+    'aggregation': {
+        'ArtMuseum': ['q7_1'],
+        'FoodAndDrink': ['q7_17'],
+        'Theater': ['q7_18', 'q7_19'],
+        'Music': ['q7_21', 'q7_22', 'q7_23', 'q7_24', 'q7_25'],
+        'Dance': ['q7_26', 'q7_27', 'q7_28'],
+    },
+    'categories': categories,
+    'filters': {
+        'region_small': ['Middle Atlantic']
+    },
+    'labels': {
+        'title': 'Did you do any of the following activities last year (2019)?',
+        'xlabel': 'Activity',
+        'ylabel': 'Proportion Responding Yes',
+    },
+    'questions': {
+        'q7_1': ['Art museum'],
+        'q7_17': ['Food and drink experience'],
+        'q7_18': ['Play (non-musical)'],
+        'q7_19': ['Musical'],
+        'q7_21': ['Popular music'],
+        'q7_22': ['Classical music'],
+        'q7_23': ['Jazz music'],
+        'q7_24': ['Opera'],
+        'q7_25': ['World music'],
+        'q7_26': ['Contemporary dance'],
+        'q7_27': ['Ballet'],
+        'q7_28': ['Regional dance'],
+    },
+    'sort_order': sort_order,
+}).plots['seaborn_barplot'].get_figure().savefig('analysis_1a', bbox_inches='tight')
+
+df[df['REGION9'] == 'East North Central'].shape
+df[df['StateName'] == 'Indiana'].shape
+df[df['CityName'] == 'Indianapolis'].shape
